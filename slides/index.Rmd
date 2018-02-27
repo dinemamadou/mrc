@@ -1,0 +1,97 @@
+---
+title: "MRC"
+subtitle: "Fun with R"
+author: "Dine Mamadou"
+date: "2018/2/27"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r load_library, message=FALSE, warning=FALSE}
+library(untidydata)
+library(xaringan)
+library(plot3D)
+library(tidyverse)
+
+#xaringan::inf_mr() to create a local server on the computer and just clic on save.
+```
+
+
+```{r, explore}
+str(language_diversity)
+
+````
+
+Hello
+
+---
+
+# Nouvelle Diapositive 
+
+Hello again
+
+``` {r, Plot}
+
+ld <- language_diversity %>%
+  filter(., Continent == 'Africa') %>% #Only countries in Africa 
+  spread(., Measurement, Value) %>%
+  select(., country = Country, 
+         pop = Population, 
+         area = Area,
+         lang = Langs) %>%
+  mutate(., logArea = log(area),
+         logPop = log(pop))
+```
+
+---
+
+# My model
+
+```{r, plot}
+
+ld %>%
+  ggplot(., aes(x = logArea, y = lang, color = logArea)) +
+  geom_point()
+```
+
+---
+- Hello
+
+--
+
+- How are you
+
+--
+
+- Bye
+
+---
+# My Model
+
+```{r, }
+my_mod <- lm(lang ~ logPop + logArea, data = ld)
+summary(my_mod)
+
+```
+
+---
+
+```{r, 3Dplot}
+library(plot3D)
+
+x <- ld$logArea
+y <- ld$logPop
+z <- ld$lang
+
+scatter3D(x, y, z)
+
+```

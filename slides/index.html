@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MRC</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Dine Mamadou" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# MRC
+## Fun with R
+### Dine Mamadou
+### 2018/2/27
+
+---
+
+
+
+
+
+```r
+library(untidydata)
+library(xaringan)
+library(plot3D)
+library(tidyverse)
+
+#xaringan::inf_mr() to create a local server on the computer and just clic on save.
+```
+
+
+
+```r
+str(language_diversity)
+```
+
+```
+## Classes 'tbl_df', 'tbl' and 'data.frame':	444 obs. of  4 variables:
+##  $ Continent  : chr  "Africa" "Africa" "Oceania" "Asia" ...
+##  $ Country    : chr  "Algeria" "Angola" "Australia" "Bangladesh" ...
+##  $ Measurement: chr  "Langs" "Langs" "Langs" "Langs" ...
+##  $ Value      : num  18 42 234 37 52 38 27 209 75 94 ...
+```
+
+Hello
+
+---
+
+# Nouvelle Diapositive 
+
+Hello again
+
+
+```r
+ld &lt;- language_diversity %&gt;%
+  filter(., Continent == 'Africa') %&gt;% #Only countries in Africa 
+  spread(., Measurement, Value) %&gt;%
+  select(., country = Country, 
+         pop = Population, 
+         area = Area,
+         lang = Langs) %&gt;%
+  mutate(., logArea = log(area),
+         logPop = log(pop))
+```
+
+---
+
+# My model
+
+
+```r
+ld %&gt;%
+  ggplot(., aes(x = logArea, y = lang, color = logArea)) +
+  geom_point()
+```
+
+![](index_files/figure-html/plot-1.png)&lt;!-- --&gt;
+
+---
+- Hello
+
+--
+
+- How are you
+
+--
+
+- Bye
+
+---
+# My Model
+
+
+```r
+my_mod &lt;- lm(lang ~ logPop + logArea, data = ld)
+summary(my_mod)
+```
+
+```
+## 
+## Call:
+## lm(formula = lang ~ logPop + logArea, data = ld)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -122.37  -47.01  -13.30   21.72  267.48 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept) -285.161    173.688  -1.642  0.10985   
+## logPop        36.564     12.806   2.855  0.00728 **
+## logArea        1.422     14.024   0.101  0.91983   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 75.71 on 34 degrees of freedom
+## Multiple R-squared:  0.2296,	Adjusted R-squared:  0.1843 
+## F-statistic: 5.066 on 2 and 34 DF,  p-value: 0.01187
+```
+
+---
+
+
+```r
+library(plot3D)
+
+x &lt;- ld$logArea
+y &lt;- ld$logPop
+z &lt;- ld$lang
+
+scatter3D(x, y, z)
+```
+
+![](index_files/figure-html/3Dplot-1.png)&lt;!-- --&gt;
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
